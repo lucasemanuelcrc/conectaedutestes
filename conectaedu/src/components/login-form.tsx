@@ -1,24 +1,54 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+"use client"; //
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    
+    console.log("Enviando dados:", { email, password });
+
+    
+    const loginFoiSucesso = true; 
+    // ----------------------------------------
+
+    if (loginFoiSucesso) {
+    
+      router.push("/inicio");
+    } else {
+
+      alert("Email ou senha inválidos!");
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          
+          <form onSubmit={handleSubmit} className="p-6 md:p-8">
+            
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-4xl font-bold text-[#000000]">ConectaEdu</h1>
@@ -28,11 +58,14 @@ export function LoginForm({
               </div>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
+                
                 <Input
                   id="email"
                   type="email"
                   placeholder=""
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </Field>
               <Field>
@@ -45,15 +78,24 @@ export function LoginForm({
                     Esqueceu a senha?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </Field>
               <Field>
-              <Button type="submit">Entrar</Button>
+
+                <Button type="submit">Entrar</Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Continue com
               </FieldSeparator>
               <Field className="grid grid-cols-3 gap-4">
+
                 <Button variant="outline" type="button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -100,6 +142,6 @@ export function LoginForm({
         Ao clicar em continuar, você concorda com nossos <a href="#">Termos de Serviços</a>{" "}
         e <a href="#">Política de Privacidade.</a>.
       </FieldDescription>
-    </div>
-  )
+    </div>
+  );
 }
