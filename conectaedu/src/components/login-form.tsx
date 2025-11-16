@@ -125,7 +125,7 @@ export function LoginForm({
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                Não possui uma conta? <a href="#">Cadastre-se</a>
+                Não possui uma conta? <a href="cadastro">Cadastre-se</a>
               </FieldDescription>
             </FieldGroup>
           </form>

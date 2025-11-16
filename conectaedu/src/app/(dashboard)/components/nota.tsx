@@ -2,7 +2,7 @@
 
 import Botao from '../components/botao';
 import { Trash2, Edit } from 'lucide-react'; 
-// (Instale: npm install lucide-react)
+
 
 type NotaProps = {
   id: string;
@@ -34,7 +34,7 @@ export default function Nota({ id, titulo, conteudo, aoExcluir }: NotaProps) {
         <Botao
           variante="perigo"
           className="text-sm"
-          onClick={() => aoExcluir(id)} // Interatividade
+          onClick={() => aoExcluir(id)}
           title="Excluir Nota"
         >
           <Trash2 className="w-4 h-4 mr-2" />
