@@ -9,8 +9,6 @@ import { NoteCard } from "../components/anotacoes/NoteCard";
 import { NoteModal } from "../components/anotacoes/NoteModal";
 import { useLocalStorageState } from "@/lib/hooks/useLocalStorageState"; // O hook de persistência!
 
-// --- DADOS DE EXEMPLO ---
-// Usado apenas na primeira vez que o usuário carregar a página
 const MOCK_NOTES: Note[] = [
   {
     id: "1",
@@ -37,10 +35,10 @@ export default function AnotacoesPage() {
   
   // --- GERENCIAMENTO DE ESTADO COM PERSISTÊNCIA ---
   
-  // Substituímos 'useState' por nosso hook. 
-  // Ele tentará carregar 'anotacoes-data'. Se falhar, usará MOCK_NOTES.
-  // Qualquer mudança feita com 'setNotes' será salva automaticamente.
-  const [notes, setNotes] = useLocalStorageState<Note[]>('anotacoes-data', MOCK_NOTES);
+  // ===================================================================
+  // ALTERAÇÃO FEITA AQUI: 'MOCK_NOTES' foi trocado por '[]'
+  const [notes, setNotes] = useLocalStorageState<Note[]>('anotacoes-data', []);
+  // ===================================================================
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
@@ -88,9 +86,8 @@ export default function AnotacoesPage() {
 
   // --- RENDERIZAÇÃO DA PÁGINA ---
   return (
-    // O 'key' no 'div' principal é um truque opcional para forçar a
-    // re-renderização da página se o número de notas mudar,
-    // garantindo que animações ou estados sejam resetados.
+    // O 'key' no 'div' principal força a re-renderização
+    // quando o número de notas muda
     <div key={notes.length} className="p-6 md:p-8 space-y-6">
       
       {/* Cabeçalho */}
@@ -116,7 +113,7 @@ export default function AnotacoesPage() {
           ))}
         </div>
       ) : (
-        // Mensagem de fallback se não houver notas
+        // Mensagem de fallback (agora será exibida por padrão)
         <div className="text-center py-20 border-2 border-dashed border-gray-200 rounded-lg">
           <h3 className="text-xl font-medium text-gray-500">Você ainda não tem anotações.</h3>
           <p className="text-gray-400 mt-2">Que tal criar a sua primeira?</p>
