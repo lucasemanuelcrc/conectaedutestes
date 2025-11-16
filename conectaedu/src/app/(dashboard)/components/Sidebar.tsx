@@ -1,83 +1,87 @@
 // dashboard/components/Sidebar.tsx
 "use client";
 
-import { useState } from 'react';
-import Image from 'next/image'; // Importar o componente Image do Next
+import { useState } from 'react'; // O useState ainda é necessário
+import Image from 'next/image';
+import Link from 'next/link';
 import {
-  LayoutDashboard, // Ícone para "Inicio"
-  BookOpen,       // Ícone para "Aulas"
-  FileText,       // Ícone para "Anotações"
-  Calendar,       // Ícone para "Calendário"
-  Settings,       // Ícone para "Configurações"
-  LogOut,         // Ícone para "Sair"
-  ChevronLeft,
-  ChevronRight,
+  LayoutDashboard,
+  BookOpen,
+  FileText,
+  Calendar,
+  Settings,
+  LogOut,
+  ChevronRight, // Não precisamos mais do ChevronLeft
   type LucideIcon
 } from 'lucide-react';
 
-// --- Define o tipo para um link de navegação ---
-interface NavLink {
-  icon: LucideIcon;
-  label: string;
-  href: string;
-}
-
-// --- Links de Navegação Superiores ---
+// --- (Arrays de links - sem alterações) ---
+interface NavLink { icon: LucideIcon; label: string; href: string; }
 const topNavLinks: NavLink[] = [
-  { icon: LayoutDashboard, label: "Inicio", href: "/inicio" },
-  { icon: BookOpen, label: "Aulas", href: "/inicio" }, // Atualize os hrefs
-  { icon: FileText, label: "Anotações", href: "#" },
-  { icon: Calendar, label: "Calendário", href: "#" },
+  { icon: LayoutDashboard, label: "Inicio", href: "/dashboard/inicio" },
+  { icon: BookOpen, label: "Aulas", href: "/dashboard/aulas" },
+  { icon: FileText, label: "Anotações", href: "/dashboard/anotacoes" },
+  { icon: Calendar, label: "Calendário", href: "/dashboard/calendario" },
 ];
-
-// --- Links de Navegação Inferiores ---
 const bottomNavLinks: NavLink[] = [
-  { icon: Settings, label: "Configurações", href: "#" },
-  { icon: LogOut, label: "Sair", href: "/" },
+  { icon: Settings, label: "Configurações", href: "/dashboard/configuracoes" },
+  { icon: LogOut, label: "Sair", href: "/login" },
 ];
+// --- (Fim dos arrays) ---
 
 export default function Sidebar() {
-  const [isExpanded, setIsExpanded] = useState(true);
+  // 1. MUDANÇA: Começa FECHADO por padrão
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <aside
       className={`
         h-screen sticky top-0
-        ${isExpanded ? 'w-64' : 'w-20'}
-        bg-gradient-to-b from-[#11348d] to-[#0b0918] 
+        ${isExpanded ? 'w-56' : 'w-20'} /* Larguras (aberto/fechado) */
+        
+        bg-gradient-to-b from-[#11348d] to-[#0b0918]
+        text-white
         transition-all duration-300 ease-in-out
-        flex flex-col  /* layout vertical */
+        flex flex-col
+        rounded-r-2xl
       `}
+      // 2. MUDANÇA: Eventos de mouse para expandir/contrair
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
     >
-      {/* 1. Cabeçalho da Sidebar (Logo + Botão) */}
-      <div className="mb- flex items-center justify-between">
-        {/* Logo: Anima junto com a sidebar */}
-        <div
-          className={`
-            overflow-hidden transition-all duration-200
-            ${isExpanded ? 'w-48' : 'w-0'} /* <-- ALTERAÇÃO FEITA AQUI */
-          `}
-        >
+      {/* 1. Cabeçalho da Sidebar */}
+      <div className={`p-3 flex items-center ${isExpanded ? 'justify-start' : 'justify-center'}`}>
+        
+        {/* Bloco da Logo (funciona com o hover) */}
+        <div>
+          {/* Logo Grande (Visível quando expandido) */}
           <Image
             src="/logobranca.png"
             alt="Logo"
-            width={150}
-            height={150}
-            className="h-50 w-auto" 
+            width={200}
+            height={300}
+            className={`
+              w-60 h-auto
+              ${isExpanded ? 'block' : 'hidden'}
+            `}
           />
+          
+          {/* Logo Pequena (Visível quando contraído) */}
         </div>
 
-        {/* Botão de Toggle */}
+        {/* 3. MUDANÇA: Botão (agora sem onClick e invisível quando aberto) */}
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 rounded-lg hover:bg-slate-800 transition-colors text-white"
+          className={`
+            p-2 rounded-lg text-white
+            ${isExpanded ? 'hidden' : 'block'}
+          `}
         >
-          {isExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+          <ChevronRight size={20} />
         </button>
       </div>
       
-      {/* 2. Links de Navegação Superiores */}
-      <nav className="px-4"> {/* Padding lateral */}
+      {/* 2. Links de Navegação Superiores (funciona com o hover) */}
+      <nav className="px-4">
         <ul className="space-y-2">
           {topNavLinks.map((link) => (
             <li key={link.label}>
@@ -87,8 +91,8 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {/* 3. Links de Navegação Inferiores (Empurrados para baixo) */}
-      <nav className="mt-auto p-4 border-t border-slate-700"> {/* mt-auto é a mágica */}
+      {/* 3. Links de Navegação Inferiores (funciona com o hover) */}
+      <nav className="mt-auto p-4 border-t border-white/10">
         <ul className="space-y-2">
           {bottomNavLinks.map((link) => (
             <li key={link.label}>
@@ -101,18 +105,19 @@ export default function Sidebar() {
   );
 }
 
-// --- Sub-componente SidebarLink (Não precisa mudar) ---
+// --- Sub-componente SidebarLink (sem alterações) ---
 interface SidebarLinkProps extends NavLink {
   isExpanded: boolean;
 }
 
 function SidebarLink({ icon: Icon, label, href, isExpanded }: SidebarLinkProps) {
   return (
-    <a
+    <Link
       href={href}
       className={`
         flex items-center p-3 rounded-lg
-        text-gray-200 hover:bg-gray-100 hover:text-slate-900
+        text-gray-200 
+        hover:bg-white/10
         transition-colors duration-200
       `}
     >
@@ -120,12 +125,12 @@ function SidebarLink({ icon: Icon, label, href, isExpanded }: SidebarLinkProps) 
       <span
         className={`
           overflow-hidden transition-all duration-200 whitespace-nowrap
-          font-bold
+          font-semibold
           ${isExpanded ? 'ml-4 w-full' : 'w-0'}
         `}
       >
         {label}
       </span>
-    </a>
+    </Link>
   );
 }

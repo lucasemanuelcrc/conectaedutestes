@@ -1,5 +1,7 @@
-// dashboard/layout.tsx
+// 1. Corrigi o caminho do import (removi o '/app')
+import { AnotacoesProvider } from '@/app/context/AnotacoesContext'; 
 import Sidebar from './components/Sidebar'; // Importa a sidebar que criamos
+import { ReactNode } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -7,16 +9,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    // Usamos Flexbox para colocar a sidebar e o conteúdo lado a lado
-    <div className="flex">
-      {/* 1. A Sidebar Fixa */}
-      <Sidebar />
+    // 2. Adicionei o "abraço" do Provedor por fora da sua div
+    <AnotacoesProvider>
+      <div className="flex">
 
-      {/* 2. O Conteúdo da Página (que é flexível) */}
-      <main className="flex-1 p-6">
-        {/* 'children' representa o arquivo 'page.tsx' que for carregado */}
-        {children}
-      </main>
-    </div>
+        <Sidebar />
+
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+        
+      </div>
+    </AnotacoesProvider>
   );
 }
