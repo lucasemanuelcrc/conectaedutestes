@@ -1,6 +1,10 @@
-// 1. Corrigi o caminho do import (removi o '/app')
-import { AnotacoesProvider } from '@/app/context/AnotacoesContext'; 
-import Sidebar from './components/Sidebar'; // Importa a sidebar que criamos
+// 🛑 SEM 'use client;' AQUI (Este é um Server Component)
+
+// Importa os dois "cérebros" (Provedores)
+import { AnotacoesProvider } from '@/app/context/AnotacoesContext';
+
+// Seus imports existentes
+import Sidebar from './components/Sidebar';
 import { ReactNode } from 'react';
 
 export default function DashboardLayout({
@@ -9,17 +13,16 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    // 2. Adicionei o "abraço" do Provedor por fora da sua div
-    <AnotacoesProvider>
-      <div className="flex">
+      <AnotacoesProvider>
+        <div className="flex">
 
-        <Sidebar />
+          <Sidebar />
 
-        <main className="flex-1 p-6">
-          {children}
-        </main>
-        
-      </div>
-    </AnotacoesProvider>
+          <main className="flex-1 p-6">
+            {children}
+          </main>
+          
+        </div>
+      </AnotacoesProvider>
   );
 }
